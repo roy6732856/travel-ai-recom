@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 旅遊推薦網站 - 設計系統</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        },
+                        secondary: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 新增：頁面導航 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <span class="text-xl font-bold">AI Travel 原型展示</span>
+                <div class="flex space-x-4">
+                    <button onclick="switchView('desktop')" class="px-4 py-2 rounded-lg bg-primary-500 text-white">桌面版</button>
+                    <button onclick="switchView('mobile')" class="px-4 py-2 rounded-lg bg-primary-500 text-white">手機版</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 新增：使用者旅程展示 -->
+    <div class="max-w-7xl mx-auto p-8 mt-20">
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6">使用者旅程</h2>
+            <div class="flex flex-nowrap overflow-x-auto gap-4 pb-4">
+                <div class="flex-none w-64 p-4 bg-white rounded-lg shadow">
+                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-user-plus text-primary-500 text-xl"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">1. 註冊/登入</h3>
+                    <p class="text-sm text-gray-600">用戶創建帳號或登入系統</p>
+                </div>
+                <div class="flex-none w-64 p-4 bg-white rounded-lg shadow">
+                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-sliders text-primary-500 text-xl"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">2. 設定偏好</h3>
+                    <p class="text-sm text-gray-600">選擇旅遊風格、預算等</p>
+                </div>
+                <div class="flex-none w-64 p-4 bg-white rounded-lg shadow">
+                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-robot text-primary-500 text-xl"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">3. AI 對話</h3>
+                    <p class="text-sm text-gray-600">與 AI 進行旅遊需求對話</p>
+                </div>
+                <div class="flex-none w-64 p-4 bg-white rounded-lg shadow">
+                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-map text-primary-500 text-xl"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">4. 獲得推薦</h3>
+                    <p class="text-sm text-gray-600">查看 AI 推薦的行程</p>
+                </div>
+                <div class="flex-none w-64 p-4 bg-white rounded-lg shadow">
+                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-edit text-primary-500 text-xl"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">5. 調整行程</h3>
+                    <p class="text-sm text-gray-600">微調和客製化行程</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 新增：原型展示區域 -->
+        <div id="prototype-container" class="space-y-16">
+            <!-- 首頁原型 -->
+            <section id="home-prototype" class="prototype-section">
+                <h2 class="text-2xl font-bold mb-6">首頁設計</h2>
+                <div class="preview-container">
+                    <!-- 桌面版首頁 -->
+                    <div class="desktop-view">
+                        <!-- 導航欄 -->
+                        <nav class="bg-white shadow-lg">
+                            <div class="max-w-7xl mx-auto px-6">
+                                <div class="flex justify-between items-center h-16">
+                                    <div class="flex items-center">
+                                        <span class="text-2xl font-bold text-primary-500">AI Travel</span>
+                                        <div class="hidden md:flex items-center ml-10 space-x-8">
+                                            <a href="#" class="text-gray-600 hover:text-primary-500">探索行程</a>
+                                            <a href="#" class="text-gray-600 hover:text-primary-500">熱門目的地</a>
+                                            <a href="#" class="text-gray-600 hover:text-primary-500">旅遊攻略</a>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <button class="px-4 py-2 text-gray-600 hover:text-primary-500">登入</button>
+                                        <button class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">開始規劃</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+
+                        <!-- 主視覺區域 -->
+                        <div class="relative bg-gradient-to-r from-primary-500 to-primary-700 text-white py-20">
+                            <div class="max-w-7xl mx-auto px-6">
+                                <div class="grid grid-cols-2 gap-12 items-center">
+                                    <div>
+                                        <h1 class="text-5xl font-bold mb-6">讓 AI 為您規劃完美旅程</h1>
+                                        <p class="text-xl mb-8 text-primary-50">只需告訴我們您的喜好，AI 就能為您打造專屬旅遊行程</p>
+                                        <div class="bg-white rounded-lg p-6 shadow-lg">
+                                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                                <div>
+                                                    <label class="block text-gray-700 text-sm font-medium mb-2">目的地</label>
+                                                    <input type="text" placeholder="想去哪裡？" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-gray-700 text-sm font-medium mb-2">旅遊天數</label>
+                                                    <input type="number" placeholder="預計天數" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                                </div>
+                                            </div>
+                                            <button class="w-full py-3 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 transition-colors">
+                                                開始智能規劃
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="relative">
+                                        <img src="https://picsum.photos/600/400" alt="旅遊示意圖" class="rounded-lg shadow-xl">
+                                        <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg">
+                                            <div class="flex items-center space-x-2">
+                                                <i class="fas fa-robot text-primary-500 text-2xl"></i>
+                                                <div>
+                                                    <p class="text-gray-800 font-medium">AI 智能推薦</p>
+                                                    <p class="text-gray-500 text-sm">根據您的喜好量身打造</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 特色功能區 -->
+                        <div class="py-16 bg-gray-50">
+                            <div class="max-w-7xl mx-auto px-6">
+                                <h2 class="text-3xl font-bold text-center mb-12">為什麼選擇 AI Travel？</h2>
+                                <div class="grid grid-cols-3 gap-8">
+                                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                                        <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                                            <i class="fas fa-magic text-primary-500 text-xl"></i>
+                                        </div>
+                                        <h3 class="text-xl font-bold mb-2">智能規劃</h3>
+                                        <p class="text-gray-600">AI 深度學習您的偏好，打造最適合的旅遊行程</p>
+                                    </div>
+                                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                                        <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                                            <i class="fas fa-clock text-primary-500 text-xl"></i>
+                                        </div>
+                                        <h3 class="text-xl font-bold mb-2">省時便利</h3>
+                                        <p class="text-gray-600">幾分鐘內完成行程規劃，省去繁瑣查詢時間</p>
+                                    </div>
+                                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                                        <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                                            <i class="fas fa-paint-brush text-primary-500 text-xl"></i>
+                                        </div>
+                                        <h3 class="text-xl font-bold mb-2">個性化定制</h3>
+                                        <p class="text-gray-600">根據預算、興趣等個人需求靈活調整行程</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 熱門目的地 -->
+                        <div class="py-16">
+                            <div class="max-w-7xl mx-auto px-6">
+                                <div class="flex justify-between items-center mb-8">
+                                    <h2 class="text-3xl font-bold">熱門目的地</h2>
+                                    <a href="#" class="text-primary-500 hover:text-primary-600">查看更多 →</a>
+                                </div>
+                                <div class="grid grid-cols-4 gap-6">
+                                    <div class="group relative rounded-lg overflow-hidden">
+                                        <img src="https://picsum.photos/300/400" alt="目的地" class="w-full h-64 object-cover">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                                        <div class="absolute bottom-4 left-4 text-white">
+                                            <h3 class="text-xl font-bold">東京</h3>
+                                            <p class="text-sm">日本</p>
+                                        </div>
+                                    </div>
+                                    <!-- 重複類似的卡片結構 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 手機版首頁 -->
+                    <div class="mobile-view hidden">
+                        <!-- 手機版導航欄 -->
+                        <nav class="bg-white shadow-lg">
+                            <div class="px-4">
+                                <div class="flex justify-between items-center h-14">
+                                    <span class="text-xl font-bold text-primary-500">AI Travel</span>
+                                    <button class="text-gray-600">
+                                        <i class="fas fa-bars text-xl"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </nav>
+
+                        <!-- 手機版主視覺區域 -->
+                        <div class="bg-gradient-to-r from-primary-500 to-primary-700 text-white px-4 py-8">
+                            <h1 class="text-3xl font-bold mb-4">讓 AI 為您規劃完美旅程</h1>
+                            <p class="text-primary-50 mb-6">只需告訴我們您的喜好，AI 就能為您打造專屬旅遊行程</p>
+                            <div class="bg-white rounded-lg p-4 shadow-lg">
+                                <div class="space-y-4 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2">目的地</label>
+                                        <input type="text" placeholder="想去哪裡？" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2">旅遊天數</label>
+                                        <input type="number" placeholder="預計天數" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                </div>
+                                <button class="w-full py-3 bg-secondary-500 text-white rounded-lg">
+                                    開始智能規劃
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 手機版特色功能區 -->
+                        <div class="px-4 py-8">
+                            <h2 class="text-2xl font-bold mb-6">為什麼選擇 AI Travel？</h2>
+                            <div class="space-y-4">
+                                <div class="bg-white p-4 rounded-lg shadow">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-magic text-primary-500"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold mb-1">智能規劃</h3>
+                                            <p class="text-sm text-gray-600">AI 深度學習您的偏好，打造最適合的旅遊行程</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 重複類似的卡片結構 -->
+                            </div>
+                        </div>
+
+                        <!-- 手機版底部導航 -->
+                        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+                            <div class="grid grid-cols-4 gap-1 py-2">
+                                <a href="#" class="flex flex-col items-center text-primary-500">
+                                    <i class="fas fa-home text-xl"></i>
+                                    <span class="text-xs mt-1">首頁</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center text-gray-400">
+                                    <i class="fas fa-compass text-xl"></i>
+                                    <span class="text-xs mt-1">探索</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center text-gray-400">
+                                    <i class="far fa-heart text-xl"></i>
+                                    <span class="text-xs mt-1">收藏</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center text-gray-400">
+                                    <i class="fas fa-user text-xl"></i>
+                                    <span class="text-xs mt-1">我的</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI 對話介面原型 -->
+            <section id="ai-chat-prototype" class="prototype-section">
+                <h2 class="text-2xl font-bold mb-6">AI 對話介面</h2>
+                <div class="preview-container">
+                    <!-- 桌面版 -->
+                    <div class="desktop-view">
+                        <div class="bg-white rounded-lg shadow-lg max-w-5xl mx-auto flex h-[800px]">
+                            <!-- 左側邊欄 -->
+                            <div class="w-80 border-r border-gray-200 flex flex-col">
+                                <!-- 搜尋框 -->
+                                <div class="p-4 border-b border-gray-200">
+                                    <div class="relative">
+                                        <input type="text" placeholder="搜尋對話紀錄" class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                </div>
+                                
+                                <!-- 對話紀錄列表 -->
+                                <div class="flex-1 overflow-y-auto">
+                                    <div class="p-2 space-y-1">
+                                        <div class="p-3 bg-primary-50 rounded-lg cursor-pointer">
+                                            <h4 class="font-medium text-primary-900">東京美食之旅規劃</h4>
+                                            <p class="text-sm text-gray-500 truncate">上次對話：2024/03/15</p>
+                                        </div>
+                                        <div class="p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                            <h4 class="font-medium">峇里島度假行程</h4>
+                                            <p class="text-sm text-gray-500 truncate">上次對話：2024/03/10</p>
+                                        </div>
+                                        <div class="p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                            <h4 class="font-medium">歐洲背包之旅</h4>
+                                            <p class="text-sm text-gray-500 truncate">上次對話：2024/03/05</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 新對話按鈕 -->
+                                <div class="p-4 border-t border-gray-200">
+                                    <button class="w-full py-2 px-4 bg-primary-500 text-white rounded-lg hover:bg-primary-600 flex items-center justify-center">
+                                        <i class="fas fa-plus mr-2"></i>
+                                        開始新對話
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 右側對話區域 -->
+                            <div class="flex-1 flex flex-col">
+                                <!-- 對話標題 -->
+                                <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-lg">東京美食之旅規劃</h3>
+                                        <p class="text-sm text-gray-500">AI 助手正在為您服務</p>
+                                    </div>
+                                    <button class="p-2 hover:bg-gray-100 rounded-lg">
+                                        <i class="fas fa-ellipsis-v text-gray-500"></i>
+                                    </button>
+                                </div>
+
+                                <!-- 對話內容區 -->
+                                <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                                    <!-- AI 歡迎訊息 -->
+                                    <div class="flex items-start">
+                                        <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-robot text-primary-500"></i>
+                                        </div>
+                                        <div class="ml-4 bg-gray-100 rounded-lg p-4 max-w-2xl">
+                                            <p class="text-gray-800">您好！我是您的 AI 旅遊助手。我看到您對東京美食之旅感興趣，請告訴我：</p>
+                                            <ul class="mt-2 space-y-1 text-gray-600">
+                                                <li>• 預計的旅遊時間？</li>
+                                                <li>• 有特別想嘗試的日本料理嗎？</li>
+                                                <li>• 預算範圍是多少？</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- 用戶回覆 -->
+                                    <div class="flex items-start justify-end">
+                                        <div class="mr-4 bg-primary-500 text-white rounded-lg p-4 max-w-2xl">
+                                            <p>我想在4月初去東京5天4夜，主要想體驗當地的壽司、拉麵和居酒屋文化。預算大約是NT$50,000。</p>
+                                        </div>
+                                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-user text-gray-500"></i>
+                                        </div>
+                                    </div>
+
+                                    <!-- AI 回覆 -->
+                                    <div class="flex items-start">
+                                        <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-robot text-primary-500"></i>
+                                        </div>
+                                        <div class="ml-4 space-y-4">
+                                            <div class="bg-gray-100 rounded-lg p-4 max-w-2xl">
+                                                <p class="text-gray-800">太好了！根據您的需求，我建議可以這樣安排：</p>
+                                                <div class="mt-3 space-y-2">
+                                                    <div class="flex items-center text-gray-600">
+                                                        <i class="fas fa-utensils w-5"></i>
+                                                        <span class="ml-2">築地市場享用新鮮壽司早餐</span>
+                                                    </div>
+                                                    <div class="flex items-center text-gray-600">
+                                                        <i class="fas fa-bowl-food w-5"></i>
+                                                        <span class="ml-2">探訪米其林推薦拉麵店</span>
+                                                    </div>
+                                                    <div class="flex items-center text-gray-600">
+                                                        <i class="fas fa-sake w-5"></i>
+                                                        <span class="ml-2">新宿黃金街居酒屋體驗</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- 推薦卡片 -->
+                                            <div class="bg-white border border-gray-200 rounded-lg overflow-hidden max-w-sm">
+                                                <img src="https://picsum.photos/400/200" alt="推薦餐廳" class="w-full h-40 object-cover">
+                                                <div class="p-4">
+                                                    <h4 class="font-bold">壽司大師 - 築地市場</h4>
+                                                    <p class="text-sm text-gray-500 mt-1">東京必訪壽司名店，新鮮食材直送</p>
+                                                    <div class="flex items-center mt-2">
+                                                        <div class="flex text-yellow-400">
+                                                            <i class="fas fa-star"></i>
+                                                            <i class="fas fa-star"></i>
+                                                            <i class="fas fa-star"></i>
+                                                            <i class="fas fa-star"></i>
+                                                            <i class="fas fa-star-half-alt"></i>
+                                                        </div>
+                                                        <span class="ml-2 text-sm text-gray-600">4.8 (2,420 評價)</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 輸入區域 -->
+                                <div class="p-4 border-t border-gray-200">
+                                    <div class="flex items-end space-x-4">
+                                        <div class="flex-1 bg-gray-50 rounded-lg border border-gray-200">
+                                            <div class="px-4 pt-3 pb-2 min-h-[60px] max-h-32 overflow-y-auto" contenteditable="true" placeholder="輸入訊息..."></div>
+                                            <div class="flex items-center px-4 py-2 border-t border-gray-200">
+                                                <button class="p-1 hover:bg-gray-200 rounded">
+                                                    <i class="far fa-image text-gray-500"></i>
+                                                </button>
+                                                <button class="p-1 hover:bg-gray-200 rounded ml-2">
+                                                    <i class="far fa-face-smile text-gray-500"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button class="px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 flex items-center">
+                                            <span>發送</span>
+                                            <i class="fas fa-paper-plane ml-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 手機版 -->
+                    <div class="mobile-view hidden">
+                        <div class="bg-white w-[375px] h-[800px] mx-auto flex flex-col">
+                            <!-- 手機版頂部導航 -->
+                            <div class="px-4 py-3 border-b border-gray-200 flex items-center">
+                                <button class="p-2 -ml-2">
+                                    <i class="fas fa-arrow-left text-gray-600"></i>
+                                </button>
+                                <div class="ml-2 flex-1">
+                                    <h3 class="font-bold">東京美食之旅規劃</h3>
+                                    <p class="text-xs text-gray-500">AI 助手正在為您服務</p>
+                                </div>
+                                <button class="p-2 -mr-2">
+                                    <i class="fas fa-ellipsis-v text-gray-500"></i>
+                                </button>
+                            </div>
+
+                            <!-- 手機版對話內容區 -->
+                            <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                                <!-- AI 訊息 -->
+                                <div class="flex items-start">
+                                    <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-robot text-primary-500 text-sm"></i>
+                                    </div>
+                                    <div class="ml-2 bg-gray-100 rounded-lg p-3 max-w-[85%]">
+                                        <p class="text-sm">您好！我是您的 AI 旅遊助手。請告訴我您的旅遊偏好：</p>
+                                        <ul class="mt-2 space-y-1 text-sm text-gray-600">
+                                            <li>• 預計的旅遊時間？</li>
+                                            <li>• 想體驗的美食類型？</li>
+                                            <li>• 預算範圍？</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- 用戶訊息 -->
+                                <div class="flex items-start justify-end">
+                                    <div class="mr-2 bg-primary-500 text-white rounded-lg p-3 max-w-[85%]">
+                                        <p class="text-sm">我想4月初去東京5天4夜，主要想體驗壽司、拉麵和居酒屋。預算約5萬。</p>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user text-gray-500 text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 手機版輸入區域 -->
+                            <div class="p-3 border-t border-gray-200">
+                                <div class="flex items-end space-x-2">
+                                    <div class="flex-1 bg-gray-50 rounded-lg border border-gray-200">
+                                        <div class="p-2 min-h-[40px] max-h-32 overflow-y-auto" contenteditable="true"></div>
+                                        <div class="flex items-center px-2 py-1 border-t border-gray-200">
+                                            <button class="p-1">
+                                                <i class="far fa-image text-gray-500 text-lg"></i>
+                                            </button>
+                                            <button class="p-1 ml-1">
+                                                <i class="far fa-face-smile text-gray-500 text-lg"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button class="p-3 bg-primary-500 text-white rounded-lg">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 行程展示原型 -->
+            <section id="itinerary-prototype" class="prototype-section">
+                <!-- 類似結構 -->
+            </section>
+
+            <!-- 登入/註冊頁面 -->
+            <section id="auth-prototype" class="prototype-section">
+                <h2 class="text-2xl font-bold mb-6">登入/註冊頁面</h2>
+                <div class="preview-container">
+                    <!-- 桌面版 -->
+                    <div class="desktop-view">
+                        <div class="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto">
+                            <div class="grid grid-cols-2 gap-8">
+                                <!-- 左側：登入表單 -->
+                                <div class="border-r border-gray-200 pr-8">
+                                    <h3 class="text-2xl font-bold mb-6 text-gray-800">登入</h3>
+                                    <form class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">電子郵件</label>
+                                            <input type="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="your@email.com">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">密碼</label>
+                                            <input type="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="••••••••">
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <input type="checkbox" class="h-4 w-4 text-primary-500 rounded border-gray-300">
+                                                <label class="ml-2 text-sm text-gray-600">記住我</label>
+                                            </div>
+                                            <a href="#" class="text-sm text-primary-500 hover:text-primary-600">忘記密碼？</a>
+                                        </div>
+                                        <button class="w-full py-2 px-4 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+                                            登入
+                                        </button>
+                                    </form>
+                                    
+                                    <!-- 社群登入 -->
+                                    <div class="mt-6">
+                                        <div class="relative">
+                                            <div class="absolute inset-0 flex items-center">
+                                                <div class="w-full border-t border-gray-300"></div>
+                                            </div>
+                                            <div class="relative flex justify-center text-sm">
+                                                <span class="px-2 bg-white text-gray-500">或使用以下方式登入</span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-6 grid grid-cols-2 gap-3">
+                                            <button class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                                <i class="fab fa-google text-red-500 mr-2"></i>
+                                                Google
+                                            </button>
+                                            <button class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                                <i class="fab fa-facebook text-blue-600 mr-2"></i>
+                                                Facebook
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 右側：註冊表單 -->
+                                <div class="pl-8">
+                                    <h3 class="text-2xl font-bold mb-6 text-gray-800">註冊新帳號</h3>
+                                    <form class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                                            <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="請輸入姓名">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">電子郵件</label>
+                                            <input type="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="your@email.com">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">密碼</label>
+                                            <input type="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="••••••••">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">確認密碼</label>
+                                            <input type="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="••••••••">
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="h-4 w-4 text-primary-500 rounded border-gray-300">
+                                            <label class="ml-2 text-sm text-gray-600">我同意服務條款和隱私政策</label>
+                                        </div>
+                                        <button class="w-full py-2 px-4 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 transition-colors">
+                                            立即註冊
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 手機版 -->
+                    <div class="mobile-view hidden">
+                        <div class="bg-white rounded-lg shadow-lg w-[375px] mx-auto p-6">
+                            <!-- 切換按鈕 -->
+                            <div class="flex border-b border-gray-200 mb-6">
+                                <button class="flex-1 py-2 text-center text-primary-500 border-b-2 border-primary-500 font-medium">登入</button>
+                                <button class="flex-1 py-2 text-center text-gray-500">註冊</button>
+                            </div>
+
+                            <!-- 登入表單 -->
+                            <form class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">電子郵件</label>
+                                    <input type="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="your@email.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">密碼</label>
+                                    <input type="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="••••••••">
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="h-4 w-4 text-primary-500 rounded border-gray-300">
+                                        <label class="ml-2 text-sm text-gray-600">記住我</label>
+                                    </div>
+                                    <a href="#" class="text-sm text-primary-500">忘記密碼？</a>
+                                </div>
+                                <button class="w-full py-3 px-4 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+                                    登入
+                                </button>
+
+                                <!-- 社群登入 -->
+                                <div class="relative my-6">
+                                    <div class="absolute inset-0 flex items-center">
+                                        <div class="w-full border-t border-gray-300"></div>
+                                    </div>
+                                    <div class="relative flex justify-center text-sm">
+                                        <span class="px-2 bg-white text-gray-500">或使用以下方式</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                        <i class="fab fa-google text-red-500 mr-2"></i>
+                                        Google
+                                    </button>
+                                    <button class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                        <i class="fab fa-facebook text-blue-600 mr-2"></i>
+                                        Facebook
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 個人偏好設定頁面 -->
+            <section id="preferences-prototype" class="prototype-section">
+                <h2 class="text-2xl font-bold mb-6">個人偏好設定頁面</h2>
+                <div class="preview-container">
+                    <!-- 桌面版 -->
+                    <div class="desktop-view">
+                        <div class="bg-white rounded-lg shadow-lg max-w-4xl mx-auto">
+                            <!-- 進度指示器 -->
+                            <div class="border-b border-gray-200">
+                                <div class="max-w-3xl mx-auto px-8 py-4">
+                                    <div class="flex justify-between">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 h-8 bg-primary-500 text-white rounded-full flex items-center justify-center">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <span class="text-sm mt-2 text-primary-500">基本資訊</span>
+                                        </div>
+                                        <div class="flex-1 flex items-center mx-4">
+                                            <div class="h-1 w-full bg-primary-500"></div>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 h-8 bg-primary-500 text-white rounded-full flex items-center justify-center">
+                                                <i class="fas fa-heart"></i>
+                                            </div>
+                                            <span class="text-sm mt-2 text-primary-500">旅遊喜好</span>
+                                        </div>
+                                        <div class="flex-1 flex items-center mx-4">
+                                            <div class="h-1 w-full bg-gray-200"></div>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 h-8 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                            <span class="text-sm mt-2 text-gray-400">完成</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 表單內容 -->
+                            <div class="max-w-3xl mx-auto px-8 py-8">
+                                <h3 class="text-2xl font-bold mb-6">告訴我們您的旅遊喜好</h3>
+                                
+                                <!-- 旅遊風格 -->
+                                <div class="mb-8">
+                                    <h4 class="text-lg font-medium mb-4">您喜歡的旅遊風格 (可多選)</h4>
+                                    <div class="grid grid-cols-3 gap-4">
+                                        <label class="relative">
+                                            <input type="checkbox" class="peer hidden">
+                                            <div class="p-4 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                                                <i class="fas fa-utensils text-2xl mb-2 text-gray-600 peer-checked:text-primary-500"></i>
+                                                <p class="font-medium">美食探索</p>
+                                            </div>
+                                        </label>
+                                        <label class="relative">
+                                            <input type="checkbox" class="peer hidden">
+                                            <div class="p-4 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                                                <i class="fas fa-landmark text-2xl mb-2 text-gray-600 peer-checked:text-primary-500"></i>
+                                                <p class="font-medium">文化歷史</p>
+                                            </div>
+                                        </label>
+                                        <label class="relative">
+                                            <input type="checkbox" class="peer hidden">
+                                            <div class="p-4 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                                                <i class="fas fa-hiking text-2xl mb-2 text-gray-600 peer-checked:text-primary-500"></i>
+                                                <p class="font-medium">戶外冒險</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- 預算範圍 -->
+                                <div class="mb-8">
+                                    <h4 class="text-lg font-medium mb-4">每日預算範圍</h4>
+                                    <div class="space-y-4">
+                                        <input type="range" min="1000" max="10000" step="500" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-500">
+                                        <div class="flex justify-between text-sm text-gray-600">
+                                            <span>NT$ 1,000</span>
+                                            <span>NT$ 5,000</span>
+                                            <span>NT$ 10,000+</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 住宿偏好 -->
+                                <div class="mb-8">
+                                    <h4 class="text-lg font-medium mb-4">住宿偏好</h4>
+                                    <div class="grid grid-cols-4 gap-4">
+                                        <label class="relative">
+                                            <input type="radio" name="accommodation" class="peer hidden">
+                                            <div class="p-4 border-2 border-gray-200 rounded-lg text-center cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                                                <i class="fas fa-hotel text-2xl mb-2 text-gray-600 peer-checked:text-primary-500"></i>
+                                                <p class="font-medium">豪華酒店</p>
+                                            </div>
+                                        </label>
+                                        <label class="relative">
+                                            <input type="radio" name="accommodation" class="peer hidden">
+                                            <div class="p-4 border-2 border-gray-200 rounded-lg text-center cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                                                <i class="fas fa-home text-2xl mb-2 text-gray-600 peer-checked:text-primary-500"></i>
+                                                <p class="font-medium">民宿</p>
+                                            </div>
+                                        </label>
+                                        <label class="relative">
+                                            <input type="radio" name="accommodation" class="peer hidden">
+                                            <div class="p-4 border-2 border-gray-200 rounded-lg text-center cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                                                <i class="fas fa-campground text-2xl mb-2 text-gray-600 peer-checked:text-primary-500"></i>
+                                                <p class="font-medium">露營</p>
+                                            </div>
+                                        </label>
+                                        <label class="relative">
+                                            <input type="radio" name="accommodation" class="peer hidden">
+                                            <div class="p-4 border-2 border-gray-200 rounded-lg text-center cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                                                <i class="fas fa-building text-2xl mb-2 text-gray-600 peer-checked:text-primary-500"></i>
+                                                <p class="font-medium">公寓</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- 特殊需求 -->
+                                <div class="mb-8">
+                                    <h4 class="text-lg font-medium mb-4">特殊需求</h4>
+                                    <div class="space-y-3">
+                                        <label class="flex items-center space-x-3">
+                                            <input type="checkbox" class="w-5 h-5 text-primary-500 border-gray-300 rounded focus:ring-primary-500">
+                                            <span>無障礙設施</span>
+                                        </label>
+                                        <label class="flex items-center space-x-3">
+                                            <input type="checkbox" class="w-5 h-5 text-primary-500 border-gray-300 rounded focus:ring-primary-500">
+                                            <span>素食餐廳</span>
+                                        </label>
+                                        <label class="flex items-center space-x-3">
+                                            <input type="checkbox" class="w-5 h-5 text-primary-500 border-gray-300 rounded focus:ring-primary-500">
+                                            <span>適合攜帶寵物</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- 按鈕組 -->
+                                <div class="flex justify-between pt-6 border-t border-gray-200">
+                                    <button class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                        返回
+                                    </button>
+                                    <button class="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                                        下一步
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 手機版 -->
+                    <div class="mobile-view hidden">
+                        <div class="bg-white min-h-screen w-[375px] mx-auto">
+                            <!-- 手機版進度指示器 -->
+                            <div class="px-4 py-3 border-b border-gray-200 sticky top-0 bg-white">
+                                <div class="flex justify-between items-center mb-2">
+                                    <button class="text-gray-600">
+                                        <i class="fas fa-arrow-left"></i>
+                                    </button>
+                                    <span class="font-medium">旅遊偏好設定</span>
+                                    <div class="w-8"></div>
+                                </div>
+                                <div class="flex justify-between">
+                                    <div class="flex-1 h-1 bg-primary-500 rounded-full"></div>
+                                    <div class="w-1"></div>
+                                    <div class="flex-1 h-1 bg-gray-200 rounded-full"></div>
+                                </div>
+                            </div>
+
+                            <!-- 手機版表單內容 -->
+                            <div class="p-4 space-y-6">
+                                <!-- 旅遊風格 -->
+                                <div>
+                                    <h4 class="text-lg font-medium mb-3">您喜歡的旅遊風格</h4>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <label class="relative">
+                                            <input type="checkbox" class="peer hidden">
+                                            <div class="p-3 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50">
+                                                <i class="fas fa-utensils text-xl mb-1 text-gray-600 peer-checked:text-primary-500"></i>
+                                                <p class="font-medium text-sm">美食探索</p>
+                                            </div>
+                                        </label>
+                                        <!-- 更多選項 -->
+                                    </div>
+                                </div>
+
+                                <!-- 預算範圍 -->
+                                <div>
+                                    <h4 class="text-lg font-medium mb-3">每日預算範圍</h4>
+                                    <input type="range" class="w-full">
+                                </div>
+
+                                <!-- 住宿偏好 -->
+                                <div>
+                                    <h4 class="text-lg font-medium mb-3">住宿偏好</h4>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <!-- 住宿選項 -->
+                                    </div>
+                                </div>
+
+                                <!-- 特殊需求 -->
+                                <div>
+                                    <h4 class="text-lg font-medium mb-3">特殊需求</h4>
+                                    <div class="space-y-2">
+                                        <!-- 特殊需求選項 -->
+                                    </div>
+                                </div>
+
+                                <!-- 底部按鈕 -->
+                                <div class="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200">
+                                    <button class="w-full py-3 bg-primary-500 text-white rounded-lg">
+                                        下一步
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 行程推薦結果頁面 -->
+            <section id="itinerary-result-prototype" class="prototype-section">
+                <h2 class="text-2xl font-bold mb-6">行程推薦結果頁面</h2>
+                <div class="preview-container">
+                    <!-- 桌面版 -->
+                    <div class="desktop-view">
+                        <div class="bg-white rounded-lg shadow-lg max-w-6xl mx-auto">
+                            <!-- 行程概覽 -->
+                            <div class="relative h-64 rounded-t-lg overflow-hidden">
+                                <img src="https://picsum.photos/1200/400" alt="東京景色" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                    <div class="flex justify-between items-end">
+                                        <div>
+                                            <h1 class="text-3xl font-bold mb-2">東京美食探索之旅</h1>
+                                            <div class="flex items-center space-x-4 text-sm">
+                                                <span><i class="far fa-calendar mr-2"></i>2024/04/01 - 04/05</span>
+                                                <span><i class="far fa-clock mr-2"></i>5天4夜</span>
+                                                <span><i class="fas fa-yen-sign mr-2"></i>預算：50,000 NT</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex space-x-3">
+                                            <button class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm">
+                                                <i class="far fa-heart mr-2"></i>收藏
+                                            </button>
+                                            <button class="px-4 py-2 bg-primary-500 hover:bg-primary-600 rounded-lg">
+                                                <i class="fas fa-share-alt mr-2"></i>分享
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 行程內容 -->
+                            <div class="p-8">
+                                <!-- 行程導航 -->
+                                <div class="flex items-center space-x-4 mb-8 border-b border-gray-200">
+                                    <button class="px-4 py-2 text-primary-500 border-b-2 border-primary-500">行程總覽</button>
+                                    <button class="px-4 py-2 text-gray-500 hover:text-gray-700">地圖檢視</button>
+                                    <button class="px-4 py-2 text-gray-500 hover:text-gray-700">交通資訊</button>
+                                    <button class="px-4 py-2 text-gray-500 hover:text-gray-700">住宿安排</button>
+                                </div>
+
+                                <!-- 日期選擇器 -->
+                                <div class="flex space-x-4 mb-8 overflow-x-auto pb-2">
+                                    <button class="flex-none px-6 py-3 bg-primary-500 text-white rounded-lg">
+                                        <div class="text-sm">Day 1</div>
+                                        <div class="font-medium">4/1</div>
+                                    </button>
+                                    <button class="flex-none px-6 py-3 bg-gray-100 rounded-lg">
+                                        <div class="text-xs text-gray-600">Day 2</div>
+                                        <div class="font-medium text-gray-800">4/2</div>
+                                    </button>
+                                    <!-- 更多日期... -->
+                                </div>
+
+                                <!-- 行程時間軸 -->
+                                <div class="relative">
+                                    <!-- 時間軸線 -->
+                                    <div class="absolute left-[39px] top-0 bottom-0 w-px bg-gray-200"></div>
+                                    
+                                    <!-- 行程項目 -->
+                                    <div class="space-y-8">
+                                        <!-- 早餐行程 -->
+                                        <div class="relative flex">
+                                            <div class="flex-none w-20 pt-1 text-sm text-gray-500">09:00</div>
+                                            <div class="flex-none w-14 flex justify-center">
+                                                <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center z-10">
+                                                    <i class="fas fa-utensils text-primary-500"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-1 bg-white rounded-lg border border-gray-200 p-4 ml-4">
+                                                <div class="flex justify-between items-start mb-2">
+                                                    <h3 class="font-bold text-lg">築地市場早餐</h3>
+                                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">已預約</span>
+                                                </div>
+                                                <p class="text-gray-600 mb-4">體驗最新鮮的日本壽司</p>
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                                        <i class="fas fa-map-marker-alt mr-1"></i>
+                                                        <span>東京都中央區築地</span>
+                                                    </div>
+                                                    <button class="text-primary-500 hover:text-primary-600">
+                                                        <i class="fas fa-chevron-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 手機版 -->
+                    <div class="mobile-view hidden">
+                        <div class="bg-white w-[375px] min-h-screen mx-auto">
+                            <!-- 手機版頂部圖片 -->
+                            <div class="relative h-48">
+                                <img src="https://picsum.photos/800/400" alt="東京景色" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute top-4 left-4 right-4 flex justify-between items-center">
+                                    <button class="w-8 h-8 bg-black/30 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-arrow-left text-white"></i>
+                                    </button>
+                                    <div class="flex space-x-2">
+                                        <button class="w-8 h-8 bg-black/30 rounded-full flex items-center justify-center">
+                                            <i class="far fa-heart text-white"></i>
+                                        </button>
+                                        <button class="w-8 h-8 bg-black/30 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-share-alt text-white"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-4 left-4 right-4 text-white">
+                                    <h1 class="text-xl font-bold mb-1">東京美食探索之旅</h1>
+                                    <div class="flex items-center text-sm">
+                                        <span><i class="far fa-calendar mr-1"></i>4/1-4/5</span>
+                                        <span class="mx-2">•</span>
+                                        <span>5天4夜</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 手機版日期選擇 -->
+                            <div class="p-4 border-b border-gray-200">
+                                <div class="flex space-x-3 overflow-x-auto">
+                                    <button class="flex-none px-4 py-2 bg-primary-500 text-white rounded-lg">
+                                        <div class="text-xs">Day 1</div>
+                                        <div class="font-medium">4/1</div>
+                                    </button>
+                                    <button class="flex-none px-4 py-2 bg-gray-100 rounded-lg">
+                                        <div class="text-xs text-gray-600">Day 2</div>
+                                        <div class="font-medium text-gray-800">4/2</div>
+                                    </button>
+                                    <!-- 更多日期... -->
+                                </div>
+                            </div>
+
+                            <!-- 手機版行程時間軸 -->
+                            <div class="p-4">
+                                <div class="relative">
+                                    <div class="absolute left-[29px] top-0 bottom-0 w-px bg-gray-200"></div>
+                                    <div class="space-y-6">
+                                        <!-- 行程項目 -->
+                                        <div class="relative flex">
+                                            <div class="flex-none w-14 pt-1 text-sm text-gray-500">09:00</div>
+                                            <div class="flex-none w-10 flex justify-center">
+                                                <div class="w-6 h-6 bg-primary-100 rounded-full flex items-center justify-center z-10">
+                                                    <i class="fas fa-utensils text-primary-500 text-xs"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-1 bg-white rounded-lg border border-gray-200 p-3 ml-2">
+                                                <div class="flex justify-between items-start mb-2">
+                                                    <h3 class="font-bold">築地市場早餐</h3>
+                                                    <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs">已預約</span>
+                                                </div>
+                                                <p class="text-sm text-gray-600 mb-2">體驗最新鮮的日本壽司</p>
+                                                <div class="flex items-center text-xs text-gray-500">
+                                                    <i class="fas fa-map-marker-alt mr-1"></i>
+                                                    <span>東京都中央區築地</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- 更多行程項目... -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 手機版底部導航 -->
+                            <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+                                <div class="grid grid-cols-4 gap-1 p-2">
+                                    <button class="flex flex-col items-center py-1 text-primary-500">
+                                        <i class="fas fa-list-ul text-lg"></i>
+                                        <span class="text-xs mt-1">行程</span>
+                                    </button>
+                                    <button class="flex flex-col items-center py-1 text-gray-400">
+                                        <i class="fas fa-map-marked-alt text-lg"></i>
+                                        <span class="text-xs mt-1">地圖</span>
+                                    </button>
+                                    <button class="flex flex-col items-center py-1 text-gray-400">
+                                        <i class="fas fa-subway text-lg"></i>
+                                        <span class="text-xs mt-1">交通</span>
+                                    </button>
+                                    <button class="flex flex-col items-center py-1 text-gray-400">
+                                        <i class="fas fa-bed text-lg"></i>
+                                        <span class="text-xs mt-1">住宿</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 在 prototype-container 內添加行程詳情頁面 -->
+            <section id="itinerary-detail-prototype" class="prototype-section">
+                <h2 class="text-2xl font-bold mb-6">行程詳情頁面</h2>
+                <div class="preview-container">
+                    <!-- 桌面版 -->
+                    <div class="desktop-view">
+                        <div class="bg-white rounded-lg shadow-lg max-w-6xl mx-auto">
+                            <!-- 景點詳情頭部 -->
+                            <div class="relative h-96 rounded-t-lg overflow-hidden">
+                                <div class="absolute inset-0 grid grid-cols-3 gap-2">
+                                    <img src="https://picsum.photos/800/600" alt="景點照片" class="w-full h-full object-cover col-span-2 row-span-2">
+                                    <img src="https://picsum.photos/801/600" alt="景點照片" class="w-full h-full object-cover">
+                                    <img src="https://picsum.photos/802/600" alt="景點照片" class="w-full h-full object-cover">
+                                    <button class="absolute bottom-4 right-4 px-4 py-2 bg-black/50 text-white rounded-lg backdrop-blur-sm hover:bg-black/60">
+                                        查看更多照片
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 主要內容 -->
+                            <div class="p-8">
+                                <div class="flex justify-between items-start mb-6">
+                                    <div>
+                                        <h1 class="text-3xl font-bold mb-2">淺草寺</h1>
+                                        <div class="flex items-center space-x-4 text-gray-600">
+                                            <span><i class="fas fa-map-marker-alt mr-2"></i>東京都淺草區</span>
+                                            <span><i class="far fa-clock mr-2"></i>建議遊覽時間：2小時</span>
+                                            <div class="flex items-center">
+                                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                                <span>4.8 (2,156 評價)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-3">
+                                        <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                            <i class="far fa-heart mr-2"></i>收藏
+                                        </button>
+                                        <button class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                                            <i class="fas fa-map-marked-alt mr-2"></i>查看地圖
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 標籤導航 -->
+                                <div class="flex items-center space-x-4 border-b border-gray-200 mb-6">
+                                    <button class="px-4 py-2 text-primary-500 border-b-2 border-primary-500">景點介紹</button>
+                                    <button class="px-4 py-2 text-gray-500 hover:text-gray-700">交通方式</button>
+                                    <button class="px-4 py-2 text-gray-500 hover:text-gray-700">開放時間</button>
+                                    <button class="px-4 py-2 text-gray-500 hover:text-gray-700">遊客評價</button>
+                                </div>
+
+                                <!-- 內容區域 -->
+                                <div class="grid grid-cols-3 gap-8">
+                                    <!-- 左側主要內容 -->
+                                    <div class="col-span-2 space-y-6">
+                                        <!-- 景點介紹 -->
+                                        <div>
+                                            <h2 class="text-xl font-bold mb-4">景點介紹</h2>
+                                            <p class="text-gray-600 leading-relaxed">
+                                                淺草寺是東京最古老的寺廟，始建於628年。寺廟以雷門和巨大的紅燈籠聞名，是東京最具代表性的觀光景點之一。參訪者可以體驗傳統的淨身儀式、求籤祈福，並在表參道購買各式日本傳統小吃和紀念品。
+                                            </p>
+                                        </div>
+
+                                        <!-- 亮點特色 -->
+                                        <div>
+                                            <h2 class="text-xl font-bold mb-4">亮點特色</h2>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                        <i class="fas fa-camera text-primary-500"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h3 class="font-medium mb-1">雷門拍照點</h3>
+                                                        <p class="text-sm text-gray-600">東京最具代表性的地標之一</p>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                        <i class="fas fa-store text-primary-500"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h3 class="font-medium mb-1">仲見世商店街</h3>
+                                                        <p class="text-sm text-gray-600">超過90家特色小店和美食</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- AI 推薦建議 -->
+                                        <div class="bg-primary-50 rounded-lg p-6">
+                                            <div class="flex items-start space-x-4">
+                                                <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                    <i class="fas fa-robot text-primary-500"></i>
+                                                </div>
+                                                <div>
+                                                    <h3 class="font-bold mb-2">AI 推薦建議</h3>
+                                                    <ul class="space-y-2 text-gray-600">
+                                                        <li><i class="fas fa-check-circle text-primary-500 mr-2"></i>建議上午9點前到達，避開人潮</li>
+                                                        <li><i class="fas fa-check-circle text-primary-500 mr-2"></i>可搭配周邊晴空塔行程</li>
+                                                        <li><i class="fas fa-check-circle text-primary-500 mr-2"></i>推薦品嚐仲見世商店街的人氣小吃</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 右側資訊欄 -->
+                                    <div class="space-y-6">
+                                        <!-- 開放時間 -->
+                                        <div class="bg-gray-50 rounded-lg p-6">
+                                            <h3 class="font-bold mb-4">開放時間</h3>
+                                            <div class="space-y-2 text-gray-600">
+                                                <div class="flex justify-between">
+                                                    <span>週一至週五</span>
+                                                    <span>06:00 - 17:00</span>
+                                                </div>
+                                                <div class="flex justify-between">
+                                                    <span>週六、週日</span>
+                                                    <span>06:00 - 18:00</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 交通資訊 -->
+                                        <div class="bg-gray-50 rounded-lg p-6">
+                                            <h3 class="font-bold mb-4">交通方式</h3>
+                                            <div class="space-y-3">
+                                                <div class="flex items-start space-x-3">
+                                                    <i class="fas fa-subway text-gray-500 mt-1"></i>
+                                                    <div>
+                                                        <p class="font-medium">地鐵淺草站</p>
+                                                        <p class="text-sm text-gray-600">銀座線、淺草線 步行3分鐘</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 周邊推薦 -->
+                                        <div>
+                                            <h3 class="font-bold mb-4">周邊推薦</h3>
+                                            <div class="space-y-3">
+                                                <div class="group flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                                                    <img src="https://picsum.photos/100/100" alt="景點" class="w-16 h-16 rounded-lg object-cover">
+                                                    <div>
+                                                        <h4 class="font-medium group-hover:text-primary-500">晴空塔</h4>
+                                                        <p class="text-sm text-gray-500">步行 15 分鐘</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 手機版 -->
+                    <div class="mobile-view hidden">
+                        <div class="bg-white w-[375px] min-h-screen mx-auto">
+                            <!-- 手機版照片輪播 -->
+                            <div class="relative h-64">
+                                <img src="https://picsum.photos/800/600" alt="景點照片" class="w-full h-full object-cover">
+                                <div class="absolute top-4 left-4 right-4 flex justify-between items-center">
+                                    <button class="w-8 h-8 bg-black/30 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-arrow-left text-white"></i>
+                                    </button>
+                                    <button class="w-8 h-8 bg-black/30 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-images text-white"></i>
+                                    </button>
+                                </div>
+                                <div class="absolute bottom-4 right-4 px-2 py-1 bg-black/50 text-white text-sm rounded-full">
+                                    1/5
+                                </div>
+                            </div>
+
+                            <!-- 手機版內容 -->
+                            <div class="p-4">
+                                <h1 class="text-xl font-bold mb-2">淺草寺</h1>
+                                <div class="flex items-center space-x-3 text-sm text-gray-600 mb-4">
+                                    <span><i class="fas fa-map-marker-alt mr-1"></i>淺草區</span>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <span>4.8</span>
+                                    </div>
+                                </div>
+
+                                <!-- 手機版標籤導航 -->
+                                <div class="flex space-x-4 overflow-x-auto pb-2 mb-4">
+                                    <button class="px-4 py-2 bg-primary-500 text-white rounded-full text-sm">景點介紹</button>
+                                    <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm">交通方式</button>
+                                    <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm">開放時間</button>
+                                    <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm">遊客評價</button>
+                                </div>
+
+                                <!-- 手機版內容區域 -->
+                                <div class="space-y-6">
+                                    <p class="text-gray-600 text-sm leading-relaxed">
+                                        淺草寺是東京最古老的寺廟，始建於628年。寺廟以雷門和巨大的紅燈籠聞名，是東京最具代表性的觀光景點之一。
+                                    </p>
+
+                                    <!-- AI 推薦建議 -->
+                                    <div class="bg-primary-50 rounded-lg p-4">
+                                        <div class="flex items-start space-x-3">
+                                            <i class="fas fa-robot text-primary-500 mt-1"></i>
+                                            <div class="text-sm">
+                                                <h3 class="font-bold mb-2">AI 推薦建議</h3>
+                                                <ul class="space-y-2 text-gray-600">
+                                                    <li>建議上午9點前到達，避開人潮</li>
+                                                    <li>可搭配周邊晴空塔行程</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 手機版底部固定按鈕 -->
+                            <div id="mobile-bottom-buttons" class="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 transform transition-transform duration-300">
+                                <div class="flex space-x-3">
+                                    <button class="flex-1 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors">
+                                        <i class="far fa-heart mr-2"></i>收藏
+                                    </button>
+                                    <button class="flex-1 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 active:bg-primary-700 transition-colors">
+                                        <i class="fas fa-map-marked-alt mr-2"></i>查看地圖
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 新增：底部間距容器 -->
+                            <div class="pb-[72px]"><!-- 確保內容不被固定按鈕遮擋 --></div>
+
+                            <!-- 新增：JavaScript 控制底部按鈕顯示/隱藏 -->
+                            <script>
+                                let scrollHandler = null;  // 新增：用於存儲當前的滾動處理函數
+
+                                function switchView(view) {
+                                    const desktopViews = document.querySelectorAll('.desktop-view');
+                                    const mobileViews = document.querySelectorAll('.mobile-view');
+                                    
+                                    // 先移除之前的滾動監聽器
+                                    if (scrollHandler) {
+                                        window.removeEventListener('scroll', scrollHandler);
+                                        scrollHandler = null;
+                                    }
+
+                                    if (view === 'desktop') {
+                                        desktopViews.forEach(v => v.classList.remove('hidden'));
+                                        mobileViews.forEach(v => v.classList.add('hidden'));
+                                    } else {
+                                        desktopViews.forEach(v => v.classList.add('hidden'));
+                                        mobileViews.forEach(v => v.classList.remove('hidden'));
+                                        
+                                        // 初始化所有可見的手機版底部按鈕
+                                        initMobileButtons();
+                                    }
+                                }
+
+                                function initMobileButtons() {
+                                    // 找到當前顯示的手機版視圖中的所有底部按鈕
+                                    const mobileButtons = document.querySelectorAll('.mobile-view:not(.hidden) #mobile-bottom-buttons');
+                                    
+                                    if (mobileButtons.length > 0) {
+                                        let lastScrollTop = 0;
+                                        let isScrolling;
+
+                                        // 創建新的滾動處理函數
+                                        scrollHandler = function() {
+                                            clearTimeout(isScrolling);
+                                            
+                                            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                                            
+                                            mobileButtons.forEach(button => {
+                                                // 只處理可見的按鈕
+                                                if (button.offsetParent !== null) {
+                                                    if (currentScroll > lastScrollTop) {
+                                                        // 向下滾動
+                                                        button.style.transform = 'translateY(100%)';
+                                                    } else {
+                                                        // 向上滾動
+                                                        button.style.transform = 'translateY(0)';
+                                                    }
+                                                }
+                                            });
+                                            
+                                            lastScrollTop = currentScroll;
+                                            
+                                            // 設置定時器，停止滾動後顯示按鈕
+                                            isScrolling = setTimeout(function() {
+                                                mobileButtons.forEach(button => {
+                                                    if (button.offsetParent !== null) {
+                                                        button.style.transform = 'translateY(0)';
+                                                    }
+                                                });
+                                            }, 150);
+                                        };
+
+                                        // 添加新的滾動監聽器
+                                        window.addEventListener('scroll', scrollHandler);
+
+                                        // 初始化按鈕狀態
+                                        mobileButtons.forEach(button => {
+                                            button.style.transform = 'translateY(0)';
+                                            // 添加過渡效果
+                                            button.style.transition = 'transform 0.3s ease-in-out';
+                                        });
+                                    }
+                                }
+
+                                // 頁面載入時初始化
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    // 檢查當前是否在手機視圖
+                                    if (document.querySelector('.mobile-view:not(.hidden)')) {
+                                        initMobileButtons();
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
